@@ -9,3 +9,7 @@ files {
     "html/index.js",
     "html/index.css",
 }
+
+dependencies {
+    "CipeZen",
+}
