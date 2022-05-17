@@ -23,23 +23,46 @@ window.onmousedown = (e) => {
         //post jquery
         $.post('http://cz_menu/pressButton', JSON.stringify({ Index: Number(atrb) }));
     }
+    if (e.target.id == "confirmcontainer2") {
+        $.post('http://cz_menu/pressButtonText', JSON.stringify({ confirm: true, value: $("#inputcontainer2").val() }));
+    }
+    if (e.target.id == "cancelcontainer2") {
+        $.post('http://cz_menu/pressButtonText', JSON.stringify({ confirm: false }));
+    }
 }
 
 CreateMenu()
+
 
 window.addEventListener("message", function(event) {
     var data = event.data;
     switch (data.action) {
         case "open":
-            if (data.Buttons) {
-                $("#container").css("display", "flex");
-                allButtons = data.Buttons;
-                $("#titlecontainer").html(data.Title);
-                CreateMenu();
+            if (data.Type == "menu") {
+                if (data.Buttons) {
+                    $("#container").css("display", "flex");
+                    allButtons = data.Buttons;
+                    $("#titlecontainer").html(data.Title);
+                    CreateMenu();
+                }
+            } else if (data.Type == "text") {
+                $("#container2").css("display", "flex");
+                $("#inputcontainer2").val("");
+                $("#bg").css("display", "block");
+                $("#titlecontainer2").html(data.Title);
             }
             break;
         case "close":
+            if (data.type == "text") {
+                $("#container2").css("display", "none");
+                $("#bg").css("display", "none");
+            } else {
+                $("#container").css("display", "none");
+            }
+            break;
+        case "closeall":
             $("#container").css("display", "none");
+            $("#container2").css("display", "none");
             break;
     }
 });

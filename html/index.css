@@ -25,6 +25,30 @@ body {
     max-width: 500px;
 }
 
+#titlecontainer2 {
+    width: 90%;
+    color: white;
+    font-size: 1.5vw;
+    text-align: center;
+}
+
+#inputcontainer2 {
+    width: 88%;
+    padding-left: 1%;
+    padding-right: 1%;
+    background: transparent;
+    border: 2px solid gray;
+    border-radius: 10px;
+    height: 20%;
+    font-size: 1vw;
+    color: white;
+}
+
+#inputcontainer2:focus {
+    outline: none;
+    border: 2px solid rgb(255, 255, 255);
+}
+
 #container {
     position: absolute;
     top: 50px;
@@ -34,6 +58,75 @@ body {
     align-items: center;
     flex-direction: column;
     font-family: 'Secular One', sans-serif;
+    z-index: 1;
+}
+
+#bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 2;
+}
+
+#container2 {
+    position: absolute;
+    width: 40%;
+    height: 20%;
+    border-radius: 10px;
+    left: 30%;
+    top: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    flex-wrap: wrap;
+    font-family: 'Secular One', sans-serif;
+    background-color: rgb(27, 27, 27);
+    border: 2px solid gray;
+    z-index: 3;
+}
+
+#buttonscontainer2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+#confirmcontainer2 {
+    color: rgba(133, 221, 0, 0.719);
+    border: 2px solid rgba(133, 221, 0, 0.719);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    width: 30%;
+    border-radius: 10px;
+}
+
+#cancelcontainer2 {
+    color: rgba(221, 0, 0, 0.719);
+    border: 2px solid rgba(221, 0, 0, 0.719);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    width: 30%;
+    border-radius: 10px;
+}
+
+#cancelcontainer2:hover {
+    background-color: rgba(221, 0, 0, 0.719);
+    color: rgb(27, 27, 27);
+}
+
+#confirmcontainer2:hover {
+    background-color: rgba(133, 221, 0, 0.719);
+    color: rgb(27, 27, 27);
 }
 
 .buttons * {
