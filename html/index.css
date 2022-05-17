@@ -78,7 +78,7 @@ body {
     border-radius: 10px;
     left: 30%;
     top: 40%;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: space-around;
     flex-direction: column;
