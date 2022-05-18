@@ -71,8 +71,8 @@ TriggerEvent("InitializeCipeZenFrameWork",function(cz)
     end)
 end)
 
-RegisterNetEvent("cz_menu:closeAllMenu")
-AddEventHandler("cz_menu:closeAllMenu",function ()
+RegisterNetEvent("c_menu_z:closeAllMenu")
+AddEventHandler("c_menu_z:closeAllMenu",function ()
     openMenus = {}
     openMenuId = nil
     openMenuIndex = nil
@@ -89,8 +89,8 @@ AddEventHandler("cz_menu:closeAllMenu",function ()
     end
 end)
 
-RegisterNetEvent("cz_menu:openMenu")
-AddEventHandler("cz_menu:openMenu",function(id,data,cb,cb1,cb2)
+RegisterNetEvent("c_menu_z:openMenu")
+AddEventHandler("c_menu_z:openMenu",function(id,data,cb,cb1,cb2)
     --local randomint = math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)
     local find = false
     for k,v in pairs(openMenus) do
