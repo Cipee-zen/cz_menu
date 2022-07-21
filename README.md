@@ -1,7 +1,7 @@
 # cz_menu
 
 ## Requirements
-- [CipeZen](https://github.com/Cipee-zen/CipeZen) - version v1.0.0
+- [CipeZen](https://github.com/Cipee-zen/CipeZen) - version v1.1.1
 ## Usage
 - ### Event
     - ### c_menu_z:openMenu
@@ -11,7 +11,7 @@
         TriggerEvent("c_menu_z:openMenu","id",{
             Title = "title",
             Type = "menu", -- optional , menu or text
-            Buttons = {{value = "dog",label = "Dog"}}
+            Buttons = {{value = "dog",label = "Dog",icon = ""}} -- icons https://ionic.io/ionicons
         },function(Value,Close)
 
         end,function(Close)

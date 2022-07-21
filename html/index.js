@@ -1,6 +1,4 @@
-let allButtons = [
-    { text: "ciao come nutta", icons: "accessibility-outline" }
-]
+let allButtons = []
 
 function CreateMenu() {
     $("#buttonsselection").empty();
@@ -8,10 +6,10 @@ function CreateMenu() {
         $("#buttonsselection").append(`
         <div index="${i+1}" class="buttons">
             <div class="buttonslogo">
-                <ion-icon name="${allButtons[i].icons}"></ion-icon>
+                <ion-icon name="${allButtons[i].icon}"></ion-icon>
             </div>
             <div class="buttonstext">
-                ${allButtons[i].text}
+                ${allButtons[i].label}
             </div>
         </div>`);
     }
@@ -20,7 +18,6 @@ function CreateMenu() {
 window.onmousedown = (e) => {
     if (e.target.className == "buttons" && e.button == 0) {
         let atrb = e.target.getAttribute("index");
-        //post jquery
         $.post('http://cz_menu/pressButton', JSON.stringify({ Index: Number(atrb) }));
     }
     if (e.target.id == "confirmcontainer2") {
@@ -30,9 +27,6 @@ window.onmousedown = (e) => {
         $.post('http://cz_menu/pressButtonText', JSON.stringify({ confirm: false }));
     }
 }
-
-CreateMenu()
-
 
 window.addEventListener("message", function(event) {
     var data = event.data;

@@ -4,7 +4,6 @@ local openMenuId = nil
 local openMenuIndex = nil
 local display = false
 local mouseMove = false
-local disableControls = {25,24}
 
 TriggerEvent("InitializeCipeZenFrameWork",function(cz)
     CZ = cz
@@ -13,62 +12,64 @@ TriggerEvent("InitializeCipeZenFrameWork",function(cz)
             if IsDisabledControlJustPressed(0, 25) then
                 mouseMove = not mouseMove
                 if mouseMove then
-                    table.insert(disableControls,1)
-                    table.insert(disableControls,2)
+                    table.insert(DisableControls,1)
+                    table.insert(DisableControls,2)
                 else
-                    table.remove(disableControls,#disableControls)
-                    table.remove(disableControls,#disableControls)
+                    table.remove(DisableControls,#DisableControls)
+                    table.remove(DisableControls,#DisableControls)
                 end
             end
-            for k,v in pairs(disableControls) do
+            for k,v in pairs(DisableControls) do
                 DisableControlAction(0,v,true)
-                DisableControlAction(1,v,true)
-                DisableControlAction(2,v,true)
             end
         end
     end)
     CZ.ControlPressed(194,function ()
         if display then
             if openMenuId ~= nil then
-                local menuId = openMenuId
-                function Close()
-                    for k,v in pairs(openMenus) do
-                        if v.id == menuId then
-                            if openMenuId == menuId then
-                                if k == 1 then
-                                    openMenuId = nil
-                                    openMenuIndex = nil
-                                    display = false
-                                    SetNuiFocus(display,display)
-                                    SetNuiFocusKeepInput(display)
-                                    SendNUIMessage({
-                                        type = v.data.Type,
-                                        action = "close"
-                                    })
-                                    if mouseMove then
-                                        table.remove(disableControls,#disableControls)
-                                        table.remove(disableControls,#disableControls)
-                                        mouseMove = false
+                if openMenus[openMenuId].data.Type == "menu" then
+                    local menuId = openMenuId
+                    function Close()
+                        for k,v in pairs(openMenus) do
+                            if v.id == menuId then
+                                if openMenuId == menuId then
+                                    if k == 1 then
+                                        openMenuId = nil
+                                        openMenuIndex = nil
+                                        display = false
+                                        SetNuiFocus(display,display)
+                                        SetNuiFocusKeepInput(display)
+                                        SendNUIMessage({
+                                            type = v.data.Type,
+                                            action = "close"
+                                        })
+                                        if mouseMove then
+                                            table.remove(DisableControls,#DisableControls)
+                                            table.remove(DisableControls,#DisableControls)
+                                            mouseMove = false
+                                        end
+                                    else
+                                        openMenuId = openMenus[k-1].id
+                                        openMenuIndex = k-1
+                                        SendNUIMessage({
+                                            action = "open",
+                                            Buttons = openMenus[k-1].data.Buttons,
+                                            Title = openMenus[k-1].data.Title,
+                                        })
                                     end
-                                else
-                                    openMenuId = openMenus[k-1].id
-                                    openMenuIndex = k-1
-                                    SendNUIMessage({
-                                        action = "open",
-                                        Buttons = openMenus[k-1].data.Buttons,
-                                        Title = openMenus[k-1].data.Title,
-                                    })
                                 end
+                                table.remove(openMenus,k)
+                                break
                             end
-                            table.remove(openMenus,k)
-                            break
                         end
                     end
+                    openMenus[openMenuIndex].cb1(Close)
                 end
-                openMenus[openMenuIndex].cb1(Close)
             end
         end
     end)
+end,function (cz)
+	CZ = cz
 end)
 
 RegisterNetEvent("c_menu_z:closeAllMenu")
@@ -83,8 +84,8 @@ AddEventHandler("c_menu_z:closeAllMenu",function ()
         action = "closeall"
     })
     if mouseMove then
-        table.remove(disableControls,#disableControls)
-        table.remove(disableControls,#disableControls)
+        table.remove(DisableControls,#DisableControls)
+        table.remove(DisableControls,#DisableControls)
         mouseMove = false
     end
 end)
@@ -149,8 +150,8 @@ RegisterNUICallback("pressButtonText", function(data)
                         action = "close"
                     })
                     if mouseMove then
-                        table.remove(disableControls,#disableControls)
-                        table.remove(disableControls,#disableControls)
+                        table.remove(DisableControls,#DisableControls)
+                        table.remove(DisableControls,#DisableControls)
                         mouseMove = false
                     end
                     openMenus = {}
@@ -192,8 +193,8 @@ RegisterNUICallback("pressButton",function(data)
                             action = "close"
                         })
                         if mouseMove then
-                            table.remove(disableControls,#disableControls)
-                            table.remove(disableControls,#disableControls)
+                            table.remove(DisableControls,#DisableControls)
+                            table.remove(DisableControls,#DisableControls)
                             mouseMove = false
                         end
                         openMenus = {}
