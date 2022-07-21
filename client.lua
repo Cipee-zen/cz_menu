@@ -63,13 +63,11 @@ TriggerEvent("InitializeCipeZenFrameWork",function(cz)
                             end
                         end
                     end
-                    openMenus[openMenuIndex].cb1(Close)
                 end
+                openMenus[openMenuIndex].cb1(Close)
             end
         end
     end)
-end,function (cz)
-	CZ = cz
 end)
 
 RegisterNetEvent("c_menu_z:closeAllMenu")
