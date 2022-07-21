@@ -1,4 +1,4 @@
-# c_menu_z
+# cz_menu
 
 ## Requirements
 - [CipeZen](https://github.com/Cipee-zen/CipeZen) - version v1.0.0
