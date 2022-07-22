@@ -1,7 +1,7 @@
 # cz_menu
 
 ## Requirements
-- [CipeZen](https://github.com/Cipee-zen/CipeZen) - version v1.1.1
+- [CipeZen](https://github.com/Cipee-zen/CipeZen) - version v1.0.0
 ## Usage
 - ### Event
     - ### c_menu_z:openMenu
