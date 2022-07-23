@@ -1,7 +1,11 @@
 # cz_menu
 
 ## Requirements
+<<<<<<< HEAD
 - [CipeZen](https://github.com/Cipee-zen/CipeZen) - v1.1.0
+=======
+- [CipeZen](https://github.com/Cipee-zen/CipeZen) - version v1.0.0
+>>>>>>> 8c7d2b01d89d224ed8af2a852686a164c40398f4
 ## Usage
 ```lua
 local elements = {
