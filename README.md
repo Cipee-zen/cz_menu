@@ -1,20 +1,45 @@
 # cz_menu
 
 ## Requirements
-- [CipeZen](https://github.com/Cipee-zen/CipeZen) - version v1.1.1
+- [CipeZen](https://github.com/Cipee-zen/CipeZen) - v1.1.0
 ## Usage
-- ### Event
-    - ### c_menu_z:openMenu
-    >this event allows you to open the **client-side** menu
+```lua
+local elements = {
+	nil,-- 1
+	nil,-- 2
+	{icon="fas fa-thumbs-up",value="yes",description = "some description"},-- 3
+	nil,-- 4
+	nil,-- 5
+	nil,-- 6
+	{icon="fas fa-thumbs-down",value="no",description = "some description"},-- 7
+    nil,-- 8
+}
+--type = "text" or "menu"
 
-    ```lua
-        TriggerEvent("c_menu_z:openMenu","id",{
-            Title = "title",
-            Type = "menu", -- optional , menu or text
-            Buttons = {{value = "dog",label = "Dog",icon = ""}} -- icons https://ionic.io/ionicons
-        },function(Value,Close)
+TriggerEvent("cz_menu:openMenu",elements,"menu",function(menu,value)
+    if value == "yes" then
+        print("yes")
+    end
+end,function(menu)
+    menu.close()
+end)
 
-        end,function(Close)
-            Close()
-        end)
-    ```
+--text menu type
+TriggerEvent("cz_menu:openMenu","description","text",function(menu,value)
+    print(value)
+end,function(menu)
+    menu.close()
+end)
+
+--close all menu
+TriggerEvent("cz_menu:closeAllMenu")
+
+--close single menu
+CZ.Menu("menu",elements,function (menu,value)
+  CZ.CloseMenu(menu.id)
+  -- or
+  menu.close()
+end,function (menu)
+  	menu.close()
+end)
+```

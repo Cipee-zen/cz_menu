@@ -1,215 +1,159 @@
 CZ = nil
-local openMenus = {}
-local openMenuId = nil
-local openMenuIndex = nil
-local display = false
-local mouseMove = false
+local Display = false
+local MenuList = {}
+local Freezvisual = false
+local ControlToEnable = {32,33,34,35,30,31,63,64,59,71,71,75,23}
+local controlToEnable = {}
 
 TriggerEvent("InitializeCipeZenFrameWork",function(cz)
     CZ = cz
-    CZ.CreateThread(1,function(pause,reasume,delete)
-        if display then
-            if IsDisabledControlJustPressed(0, 25) then
-                mouseMove = not mouseMove
-                if mouseMove then
-                    table.insert(DisableControls,1)
-                    table.insert(DisableControls,2)
-                else
-                    table.remove(DisableControls,#DisableControls)
-                    table.remove(DisableControls,#DisableControls)
-                end
-            end
-            for k,v in pairs(DisableControls) do
-                DisableControlAction(0,v,true)
-            end
-        end
-    end)
-    CZ.ControlPressed(194,function ()
-        if display then
-            if openMenuId ~= nil then
-                if openMenus[openMenuId].data.Type == "menu" then
-                    local menuId = openMenuId
-                    function Close()
-                        for k,v in pairs(openMenus) do
-                            if v.id == menuId then
-                                if openMenuId == menuId then
-                                    if k == 1 then
-                                        openMenuId = nil
-                                        openMenuIndex = nil
-                                        display = false
-                                        SetNuiFocus(display,display)
-                                        SetNuiFocusKeepInput(display)
-                                        SendNUIMessage({
-                                            type = v.data.Type,
-                                            action = "close"
-                                        })
-                                        if mouseMove then
-                                            table.remove(DisableControls,#DisableControls)
-                                            table.remove(DisableControls,#DisableControls)
-                                            mouseMove = false
-                                        end
-                                    else
-                                        openMenuId = openMenus[k-1].id
-                                        openMenuIndex = k-1
-                                        SendNUIMessage({
-                                            action = "open",
-                                            Buttons = openMenus[k-1].data.Buttons,
-                                            Title = openMenus[k-1].data.Title,
-                                        })
-                                    end
-                                end
-                                table.remove(openMenus,k)
-                                break
-                            end
-                        end
-                    end
-                end
-                openMenus[openMenuIndex].cb1(Close)
-            end
-        end
-    end)
 end)
 
-RegisterNetEvent("c_menu_z:closeAllMenu")
-AddEventHandler("c_menu_z:closeAllMenu",function ()
-    openMenus = {}
-    openMenuId = nil
-    openMenuIndex = nil
-    display = false
-    SetNuiFocus(display,display)
-    SetNuiFocusKeepInput(display)
-    SendNUIMessage({
-        action = "closeall"
-    })
-    if mouseMove then
-        table.remove(DisableControls,#DisableControls)
-        table.remove(DisableControls,#DisableControls)
-        mouseMove = false
+Citizen.CreateThread(function ()
+    while true do
+        Wait(1)
+        if Display then
+            DisableAllControlActions(0)
+            for k,v in pairs(controlToEnable) do
+                EnableControlAction(0,v,true)
+            end
+            if not Freezvisual then
+                EnableControlAction(0, 1, true)
+                EnableControlAction(0, 2, true)
+            end
+            if IsDisabledControlJustPressed(0, 25) then
+                Freezvisual = not Freezvisual
+            end
+        end
     end
 end)
 
-RegisterNetEvent("c_menu_z:openMenu")
-AddEventHandler("c_menu_z:openMenu",function(id,data,cb,cb1,cb2)
-    --local randomint = math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)..math.random(0,100)
-    local find = false
-    for k,v in pairs(openMenus) do
-        if v.id == id then
-            find = true
-            print("this menu is already open \'"..id.."\'")
+RegisterNUICallback("closeall", function ()
+    Display = false
+    MenuList = {}
+    SetNuiFocus(false, false)
+    Freezvisual = false
+end)
+
+RegisterNUICallback("close", function (data)
+    for k, v in pairs(MenuList) do
+        if v.id == data.menu then
+            v.cb2({
+                close = function ()
+                    TriggerEvent("cz_menu:closeMenu",data.menu)
+                end,
+                id = data.menu
+            })
+            return
+        end
+    end
+end)
+
+RegisterNUICallback("callback", function (data)
+    for k,v in pairs(MenuList) do
+        if v.id == data.menu then
+            for s,t in pairs(v.selection) do
+                if t and t.value == data.value then
+                    v.cb1({
+                        close = function ()
+                            TriggerEvent("cz_menu:closeMenu",data.menu)
+                        end,
+                        id = data.menu
+                    },data.value)
+                    return
+                end
+            end
+        end
+    end
+end)
+
+RegisterNUICallback("textCallback", function(data)
+    for k,v in pairs(MenuList) do
+        if v.id == data.menu then
+            if data.cancell then
+                v.cb2({
+                    close = function ()
+                        TriggerEvent("cz_menu:closeMenu",data.menu)
+                    end,
+                    id = data.menu
+                })
+                return
+            else
+                v.cb1({
+                    close = function ()
+                        TriggerEvent("cz_menu:closeMenu",data.menu)
+                    end,
+                    id = data.menu
+                },data.value)
+                return
+            end
+        end
+    end
+end)
+
+RegisterNetEvent("cz_menu:closeMenu")
+AddEventHandler("cz_menu:closeMenu", function (menu)
+    for k, v in pairs(MenuList) do
+        if v.id == menu then
+            SendNUIMessage({
+                action = "closemenu",
+                menu = menu,
+            })
+            table.remove(MenuList,k)
             break
         end
     end
-    if not find then
-        table.insert(openMenus,{
-            id = id,
-            data = data,
-            cb = cb,
-            cb1 = cb1,
-            cb2 = cb2,
-        })
-        display = true
-        SetNuiFocus(display,display)
-        SetNuiFocusKeepInput(display)
-        openMenuId = id
-        openMenuIndex = #openMenus
+    controlToEnable = ControlToEnable
+end)
+
+RegisterNetEvent("cz_menu:openMenu")
+AddEventHandler("cz_menu:openMenu", function (selection,t,cb1,cb2)
+    SetNuiFocus(true,true)
+    SetNuiFocusKeepInput(true)
+    Display = true
+    local id = Verifyid()
+    table.insert(MenuList,{id = id,selection = selection,type = t,cb1 = cb1,cb2 = cb2})
+    if t == "text" then
+        controlToEnable = {}
         SendNUIMessage({
-            action = "open",
-            Buttons = data.Buttons,
-            Type = data.Type,
-            Title = data.Title,
+            action = "openmenu",
+            menu = id,
+            title = selection,
+            type = t
+        })
+    else
+        controlToEnable = ControlToEnable
+        SendNUIMessage({
+            action = "openmenu",
+            menu = id,
+            selection = selection,
+            type = t
         })
     end
 end)
 
-function GetIndexOf(search,table)
-    for k,v in pairs(search) do
-        if v == table then
-            return k
+RegisterNetEvent("cz_menu:closeAllMenu")
+AddEventHandler("cz_menu:closeAllMenu", function()
+    for k, v in pairs(MenuList) do
+        SendNUIMessage({
+            action = "closemenu",
+            menu = menu,
+        })
+    end
+    MenuList = {}
+    CurrentMenuOpen = nil
+end)
+
+function Verifyid()
+    local id = math.random(0,9)..math.random(0,9)..math.random(0,9)
+    local find = false
+    for k,v in pairs(MenuList) do
+        if v.id == id then
+            find = true
+            return verifyid()
         end
     end
-    return nil
+    if find == false then
+        return id
+    end
 end
-
-RegisterNUICallback("pressButtonText", function(data)
-    local menuId = openMenuId
-    local menu = openMenus[openMenuIndex]
-    function Close()
-        local index = GetIndexOf(openMenus,menu)
-        if index then
-            if menuId == openMenuId then
-                if #openMenus == 1 then
-                    display = false
-                    openMenuId = nil
-                    openMenuIndex = nil
-                    SetNuiFocus(display,display)
-                    SetNuiFocusKeepInput(display)
-                    SendNUIMessage({
-                        type = menu.data.Type,
-                        action = "close"
-                    })
-                    if mouseMove then
-                        table.remove(DisableControls,#DisableControls)
-                        table.remove(DisableControls,#DisableControls)
-                        mouseMove = false
-                    end
-                    openMenus = {}
-                else
-                    openMenuId = openMenus[index-1].id
-                    openMenuIndex = index-1
-                    SendNUIMessage({
-                        action = "open",
-                        Buttons = openMenus[index-1].data.Buttons,
-                        Title = openMenus[index-1].data.Title,
-                    })
-                    table.remove(openMenus,index)
-                end
-            end
-        end
-    end
-    if data.confirm then
-        menu.cb(data.value,Close)
-    else
-        menu.cb1(Close)
-    end
-end)
-
-RegisterNUICallback("pressButton",function(data)
-    local buttonIndex = data.Index
-    local menuId = openMenuId
-    function Close()
-        for k,v in pairs(openMenus) do
-            if v.id == menuId then
-                if openMenuId == menuId then
-                    if k == 1 then
-                        openMenuId = nil
-                        openMenuIndex = nil
-                        display = false
-                        SetNuiFocus(display,display)
-                        SetNuiFocusKeepInput(display)
-                        SendNUIMessage({
-                            type = v.data.Type,
-                            action = "close"
-                        })
-                        if mouseMove then
-                            table.remove(DisableControls,#DisableControls)
-                            table.remove(DisableControls,#DisableControls)
-                            mouseMove = false
-                        end
-                        openMenus = {}
-                    else
-                        openMenuId = openMenus[k-1].id
-                        openMenuIndex = k-1
-                        SendNUIMessage({
-                            action = "open",
-                            Buttons = openMenus[k-1].data.Buttons,
-                            Title = openMenus[k-1].data.Title,
-                        })
-                        table.remove(openMenus,k)
-                    end
-                end
-                break
-            end
-        end
-    end
-    openMenus[openMenuIndex].cb(openMenus[openMenuIndex].data.Buttons[buttonIndex].value,Close)
-end)

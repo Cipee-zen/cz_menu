@@ -1,19 +1,16 @@
-game "gta5"
-fx_version "cerulean"
+fx_version 'adamant'
+
+game 'gta5'
+
+description 'menu'
 
 client_scripts {
-    "DisableControls.lua",
-    "client.lua"
+	'client.lua',
 }
-
-ui_page 'html/index.html'
-
+ui_page "html/index.html"
 files {
     "html/index.html",
-    "html/index.js",
-    "html/index.css",
-}
-
-dependencies {
-    "CipeZen",
+	"html/index.js",
+	"html/index.css",
+	"html/img/*.png"
 }
